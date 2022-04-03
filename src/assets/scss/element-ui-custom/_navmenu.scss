@@ -1,0 +1,27 @@
+.el-menu-custom {
+    max-width: 1460px;
+}
+.el-menu {
+    position: block;
+    margin: auto !important;
+}
+.el-menu.el-menu--horizontal {
+    border-bottom: solid 1px #3186FB !important;
+}
+.el-menu--horizontal > .el-menu-item.is-active {
+    border-bottom: none !important;
+}
+.header {
+    position: fixed;
+    z-index: 2000;
+    top: 0;
+    width: 100%;
+    font-size: 13px;
+    background-color: #3186FB !important;
+}
+.el-menu--horizontal > .el-menu-item,
+.el-menu--horizontal > .el-submenu .el-submenu__title {
+    padding: 10px !important;
+    height: 90px !important;
+    line-height: 70px !important;
+}

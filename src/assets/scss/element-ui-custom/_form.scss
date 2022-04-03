@@ -1,0 +1,55 @@
+.el-form.top-label-custom{
+  .el-form-item {
+    padding: 5px;
+    label {
+      padding-bottom: 0px !important;
+      line-height: 14px !important;
+      font-weight: bold !important;
+    }
+  }
+}
+.login-form-custom{
+  .el-form-item {
+    padding: 5px;
+    label {
+      display: inline-block;
+      max-width: 100%;
+      margin-bottom: 5px;
+      font-weight: 700;
+      font-size: 14px;
+      color: #2F2F2F;
+      
+      padding-bottom: 0px !important;
+      line-height: 14px !important;
+    }
+    input {
+      border: none;
+      width: 100%;
+      background: #fff;
+      border-radius: 8px;
+      -o-border-radius: 8px;
+      -moz-border-radius: 8px;
+      -webkit-border-radius: 8px;
+      -ms-border-radius: 8px;
+      border: 2px solid #E3E0E0;
+      height: 48px;
+      padding: 0 10px;
+      font-size: 15px;
+      &:focus {
+        border-color: #797a7b;
+      }
+    }
+  }
+  button{
+    padding: 12px 50px !important;
+    font-size: 18px !important;
+    min-width: 200px !important;
+  }
+}
+.el-input.is-disabled .el-input__inner,
+.el-radio__input.is-disabled + span.el-radio__label{
+  color: #090909 !important;
+}
+.el-radio__input.is-disabled.is-checked .el-radio__inner::after {
+  background-color: #090909 !important;
+}

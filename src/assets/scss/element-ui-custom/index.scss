@@ -1,0 +1,16 @@
+/* theme color */
+$--color-primary: #3186fb !default;
+
+/* icon font path, required */
+$--font-path: '~element-ui/lib/theme-chalk/fonts';
+@import "table";
+@import "form";
+@import "navmenu";
+@import "~element-ui/packages/theme-chalk/src/index";
+
+.el-divider .el-divider__text{
+    font-size: 18px !important;
+}
+.el-submenu__title i {
+    color: white !important;
+}

@@ -1,0 +1,24 @@
+const roleRouter = [
+  {
+    path: 'roles/',
+    component: () => import('@/views/roles'),
+    name: 'Roles',
+    meta: { title: 'Роли', icon: 'role', noCache: true }
+  },
+  {
+    path: 'roles/create',
+    component: () => import('@/views/roles/create'),
+    name: 'CreateRole',
+    meta: { title: 'Создать', icon: 'edit', activeMenu: 'roles' },
+    hidden: true
+  },
+  {
+    path: 'roles/edit/:id(\\d+)',
+    component: () => import('@/views/roles/edit'),
+    name: 'EditRole',
+    meta: { title: 'Изменить', noCache: true, activeMenu: 'roles' },
+    hidden: true
+  }
+]
+
+export default roleRouter
