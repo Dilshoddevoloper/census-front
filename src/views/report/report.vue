@@ -1,9 +1,7 @@
 <template>
   <div class="container">
     <el-button type="primary" icon="el-icon-arrow-left" @click="back">{{ $t('Орқага') }}</el-button>
-    <h4 v-if="user.role.name == 'operator'" class="text-center">{{ user.fullname }}{{ $t('га аъзо депутатлар базага киритилиши бўйича') }} <br>{{ $t('МАЪЛУМОТ') }} </h4>
-    <h4 v-if="user.role.name == 'region_party'" class="text-center">{{ user.party.name_uz }}{{ $t('га аъзо депутатлар') }} {{ user.fullname }}{{ $t('да базага киритилиши бўйича') }} <br>{{ $t('МАЪЛУМОТ') }} </h4>
-    <h4 v-if="user.role.name === 'admin'" class="text-center">{{ $t('Халқ депутатлари кенгаши аъзолари базага киритилиши бўйича') }} <br>{{ $t('МАЪЛУМОТ')}} </h4>
+    <h4 v-if="user.role_id === 1" class="text-center">{{ $t('Халқ депутатлари кенгаши аъзолари базага киритилиши бўйича') }} <br>{{ $t('МАЪЛУМОТ')}} </h4>
     <p class="text-center"><b><img alt="logo" src="@/assets/images/small-calendar.svg" height="14px"> ( {{ today }} {{ $t('ҳолатида') }} )</b></p>
     <div class="bg-white box-shadow p-4">
       <el-button type="success" class="float-right mb-4 font-weight-bold" icon="el-icon-download" :loading="isLoading" @click="exportToXlsx()">{{ $t('Юклаб олиш') }}</el-button>
@@ -16,35 +14,23 @@
           loader="bars"
         /> -->
         <thead>
-          <tr>
-            <th v-if="user.role.name === 'admin'">{{ $t('Партия номи') }}</th>
-            <th v-if="user.role.name === 'region_party'">{{ $t('Ҳудуд номи') }}</th>
-            <th v-if="user.role.name === 'operator'">{{ $t('Ҳудудлар') }}</th>
-            <th>{{ $t('Режа') }}</th>
-            <th>{{ $t('Киритилди(кечаги ҳолат)') }}</th>
-            <th>{{ $t('Киритилди(бугунги ҳолат)') }}</th>
-            <th>{{ $t('Бугун киритилган') }}</th>
-            <th>{{ $t('Режага нисбатан киритилган(%)') }}</th>
+        <tr>
+          <td> {{ $t('Жaми') }} </td>
+          <th v-for="social in social_areas" >{{ social.name_cyrl }}</th>
           </tr>
         </thead>
         <tbody>
           <template>
-            <tr v-if="parties_report.report[0].name !== 'Жами' && !user.region_id">
-              <td> {{ $t('Жaми') }} </td>
-              <td>{{ formatPrice(allPlans) }}</td>
-              <td>{{ formatPrice(allCountYesterday)  }}</td>
-              <td>{{ formatPrice(allCountToday)  }}</td>
-              <td>{{ formatPrice(getDifference(allCountToday, allCountYesterday))  }}</td>
-              <td>{{ getPercent( allPlans, allCountToday ) }}</td>
+            <tr v-for="social in regions">
+              <td> {{ social.name_cyrl }} </td>
             </tr>
-            <tr v-for="party in parties_report.report">
-              <td>{{ party.name }}</td>
-              <td>{{ formatPrice(party.plan)  }}</td>
-              <td>{{ formatPrice(party.yesterday) }}</td>
-              <td>{{ formatPrice(party.count) }}</td>
-              <td>{{ formatPrice(getDifference(party.count, party.yesterday)) }}</td>
-              <td>{{ getPercent( party.plan, party.count) }}</td>
-            </tr>
+<!--            <tr v-for="party in parties_report.report">-->
+<!--              <td>{{ party.name }}</td>-->
+<!--              <td>{{ formatPrice(party.plan)  }}</td>-->
+<!--              <td>{{ formatPrice(party.yesterday) }}</td>-->
+<!--              <td>{{ formatPrice(party.count) }}</td>-->
+<!--              <td>{{ formatPrice(getDifference(party.count, party.yesterday)) }}</td>-->
+<!--              <td>{{ getPercent( party.plan, party.count) }}</td>-->
           </template>
         </tbody>
       </table>
@@ -116,36 +102,44 @@ export default {
         this.isLoading = false
       }
     })
+    this.fetchSocialAreas().then((res) => {
+      this.sendFilter()
+    })
+    this.fetchRegions().then((res) => {
+      this.sendFilter()
+    })
   },
   computed: {
     ...mapGetters({
       parties_report: 'report/GET_REPORT',
-      user: 'auth/USER'
+      user: 'auth/USER',
+      social_areas: 'citizen/GET_SOCIAL_AREAS',
+      regions: 'citizen/GET_REGIONS',
     }),
-    allPlans() {
-      var all = 0
-      var repo = this.parties_report.report
-      for (let i = 0; i < repo.length; i++) {
-        all += repo[i].plan
-      }
-      return all
-    },
-    allCountYesterday() {
-      var all = 0
-      var repo = this.parties_report.report
-      for (let i = 0; i < repo.length; i++) {
-        all += repo[i].yesterday
-      }
-      return all
-    },
-    allCountToday() {
-      var all = 0
-      var repo = this.parties_report.report
-      for (let i = 0; i < repo.length; i++) {
-        all += repo[i].count
-      }
-      return all
-    },
+    // allPlans() {
+    //   var all = 0
+    //   var repo = this.parties_report.report
+    //   for (let i = 0; i < repo.length; i++) {
+    //     all += repo[i].plan
+    //   }
+    //   return all
+    // },
+    // allCountYesterday() {
+    //   var all = 0
+    //   var repo = this.parties_report.report
+    //   for (let i = 0; i < repo.length; i++) {
+    //     all += repo[i].yesterday
+    //   }
+    //   return all
+    // },
+    // allCountToday() {
+    //   var all = 0
+    //   var repo = this.parties_report.report
+    //   for (let i = 0; i < repo.length; i++) {
+    //     all += repo[i].count
+    //   }
+    //   return all
+    // },
     // allCounts() {
     //   if (this.parties_report.report[0].name !== "Жами" && !this.user.region_id) {
     //     this.parties_report.report.unshift(
@@ -158,13 +152,13 @@ export default {
     //     )
     //   }
     // },
-    difference() {
-      var all = []
-      var repo = this.parties_report.report
-      for (let i = 0; i < repo.length; i++) {
-        return all = repo[i].count -repo[i].yesterday
-      }
-    },
+    // difference() {
+    //   var all = []
+    //   var repo = this.parties_report.report
+    //   for (let i = 0; i < repo.length; i++) {
+    //     return all = repo[i].count -repo[i].yesterday
+    //   }
+    // },
     today() {
       var today = new Date()
       var dd = String(today.getDate()).padStart(2, '0')
@@ -174,7 +168,10 @@ export default {
     }
   },
   methods: {
-    ...mapActions({ setReport: 'report/reportAll' }),
+    ...mapActions({ setReport: 'report/reportAll',
+      fetchSocialAreas: 'citizen/social_areas',
+      fetchRegions: 'citizen/regions',
+    }),
     getPercent(plan, actual) {
       if (actual > 0 && plan) {
         return ((actual / plan) * 100).toFixed(1) + ' %'
@@ -249,7 +246,7 @@ export default {
 <style scoped>
   table tr:first-child td{
     font-weight: bold;
-    font-size: 18px;
+    font-size: 16px;
   }
   th{
     padding-top: 6px !important;

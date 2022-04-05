@@ -14,8 +14,10 @@ export const mutations = {
     state.citizen.region_id = citizen.region_id
     state.citizen.city = citizen.city
     state.citizen.region = citizen.region
+    state.citizen.social_areas = citizen.social_areas
     state.citizen.city_id = citizen.city_id
     state.citizen.type = citizen.type
+    state.citizen.social_areas_id = citizen.social_areas_id
   },
   SET_CITIZENS: (state, citizens) => {
     state.citizens.data = citizens.data
@@ -31,4 +33,7 @@ export const mutations = {
   SET_CITIES: (state, cities) => {
     state.cities = cities
   },
+  SET_SOCIAL_AREAS: (state, social_areas) => {
+    state.social_areas = social_areas
+  }
 }

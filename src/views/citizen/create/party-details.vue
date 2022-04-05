@@ -78,7 +78,7 @@ export default {
       }
       return years
     },
-    ...mapGetters({ user: 'auth/USER', regions: 'citizen/GET_REGIONS', cities: 'citizen/GET_CITIES' }),
+    ...mapGetters({ user: 'auth/USER', regions: 'citizen/GET_REGIONS', cities: 'citizen/GET_CITIES', social_areas: 'citizen/GET_SOCIAL_AREAS' }),
   },
   created() {
     this.getCities()
@@ -92,7 +92,7 @@ export default {
     getCities() {
       this.fetchCities({ region_id: this.user.region_id })
     },
-     ...mapActions({ fetchCities: 'citizen/cities', fetchRegions: 'citizen/regions' })
+     ...mapActions({ fetchCities: 'citizen/cities', fetchRegions: 'citizen/regions' , fetchSocialAreas: 'citizen/social_areas' })
   }
 }
 </script>

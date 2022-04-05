@@ -22,7 +22,7 @@
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item type="date" :label="$t('Туғилган куни')">
+            <el-form-item type="date" :label="$t('Туғилган санаси')">
               <el-input
                 ref="birth_date"
                 v-loading="loading === 'birth_date'"
@@ -30,6 +30,11 @@
                 v-mask="'##.##.####'"
                 placeholder="01.01.2019"
               />
+            </el-form-item>
+          </el-col>
+          <el-col :span="6">
+            <el-form-item :label="$t('ЖШШИР')">
+              <el-input v-model="form.tin" />
             </el-form-item>
           </el-col>
         </el-row>
@@ -52,13 +57,15 @@
         </el-row>
         <el-row>
           <el-col :span="6">
-            <el-form-item :label="$t('ЖШШИР')">
-              <el-input v-model="form.tin" />
+            <el-form-item :label="$t('Aддресс')">
+              <el-input v-model="form.address" />
             </el-form-item>
           </el-col>
           <el-col :span="6">
-            <el-form-item :label="$t('Aддресс')">
-              <el-input v-model="form.address" />
+            <el-form-item :label="$t('Ижтимоий ҳолати')" prop="social_areas_id">
+              <el-select v-model="form.social_areas_id" class="w-100" filterable>
+                <el-option v-for="social in social_areas" :key="social.id" :label="social.name_cyrl" :value="social.id" />
+              </el-select>
             </el-form-item>
           </el-col>
         </el-row>
@@ -68,7 +75,7 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex'
+import {mapActions, mapGetters} from 'vuex'
 
 export default {
   name: 'PersonalDetial',
@@ -98,6 +105,9 @@ export default {
     }
   },
   computed: {
+    ...mapGetters({
+      social_areas: 'citizen/GET_SOCIAL_AREAS'
+    }),
     isNumberFull() {
       return (this.form.passport.length >= 10)
     },
@@ -127,6 +137,9 @@ export default {
     setTimeout(() => this.delaying = true, 500)
   },
   methods: {
+    ...mapActions({
+      fetchSocialAreas: 'citizen/social_areas'
+    }),
     // getPassport() {
     //   this.loading = 'passport'
     //   this.getPassportAction({ passport: this.form.passport, birth_date: '' })

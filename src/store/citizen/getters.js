@@ -7,4 +7,5 @@ export const getters = {
   FULL_NAME: (state) => state.citizen.first_name + ' ' + state.citizen.last_name + ' ' + state.citizen.fathers_name,
   GET_REGIONS: (state) => state.regions,
   GET_CITIES: (state) => state.cities,
+  GET_SOCIAL_AREAS: (state) => state.social_areas
 }

@@ -82,3 +82,10 @@ export function cities(query) {
     params: query
   })
 }
+export function social_areas(query) {
+  return request({
+    url: 'v1/resources/social_areas',
+    method: 'get',
+    params: query
+  })
+}

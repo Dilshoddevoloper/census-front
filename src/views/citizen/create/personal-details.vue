@@ -3,8 +3,8 @@
     ref="personal-form"
     label-position="top"
     class="top-label-custom"
-    :rules="rules"
     :model="form"
+    :rules="rules"
   >
     <el-row>
       <el-divider content-position="left">{{ $t('Шахсий маълумотлар') }}</el-divider>
@@ -25,7 +25,7 @@
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item type="date" :label="$t('Туғилган куни')">
+            <el-form-item type="date" :label="$t('Туғилган санаси')" prop="birth_date">
               <el-input
                 v-loading="loading === 'birth_date'"
                 ref="birth_date"
@@ -35,33 +35,40 @@
               />
             </el-form-item>
           </el-col>
+          <el-col :span="6">
+            <el-form-item :label="$t('ЖШШИР')"prop="tin">
+              <el-input maxlength="14" v-model="form.tin" />
+            </el-form-item>
+          </el-col>
         </el-row>
         <el-row>
           <el-col :span="8">
-            <el-form-item :label="$t('Фамилия')">
+            <el-form-item :label="$t('Фамилия')" prop="last_name">
               <el-input v-model="form.last_name" />
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item :label="$t('Исм')">
+            <el-form-item :label="$t('Исм')" prop="first_name">
               <el-input v-model="form.first_name" />
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item :label="$t('Отасининг исми')">
+            <el-form-item :label="$t('Отасининг исми')" prop="fathers_name">
               <el-input v-model="form.fathers_name" />
             </el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="6">
-            <el-form-item :label="$t('ЖШШИР')">
-              <el-input v-model="form.tin" />
+            <el-form-item :label="$t('Aддресс')" prop="address">
+              <el-input v-model="form.address" />
             </el-form-item>
           </el-col>
           <el-col :span="6">
-            <el-form-item :label="$t('Aддресс')">
-              <el-input v-model="form.address" />
+            <el-form-item :label="$t('Ижтимоий ҳолати')" prop="social_areas_id">
+              <el-select v-model="form.social_areas_id" class="w-100" filterable>
+                <el-option v-for="social in social_areas" :key="social.id" :label="social.name_cyrl" :value="social.id" />
+              </el-select>
             </el-form-item>
           </el-col>
         </el-row>
@@ -71,7 +78,7 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex'
+import { mapActions, mapGetters } from 'vuex'
 
 export default {
   name: 'PersonalDetial',
@@ -88,18 +95,38 @@ export default {
       loading: '',
       active: 0,
       rules: {
-        passport: [
-          { required: true, message: this.$t('Паспорт киритилмаган'), trigger: 'change' }
-        ],
-        birth_date: [
-          { required: true, message: this.$t('Туғилган сана киритилмаган'), trigger: 'change' }
-        ]
+      //   passport: [
+      //     { required: true, message: this.$t('Паспорт киритилмаган'), trigger: 'change' }
+      //   ],
+      //   birth_date: [
+      //     { required: true, message: this.$t('Туғилган сана киритилмаган'), trigger: 'change' }
+      //   ],
+      //   first_name: [
+      //     { required: true, message: this.$t('Исм киритилмаган'), trigger: 'change' }
+      //   ],
+      //   last_name: [
+      //     { required: true, message: this.$t('Фамилия киритилмаган'), trigger: 'change' }
+      //   ],
+      //   fathers_name: [
+      //     { required: true, message: this.$t('Отасининг исми киритилмаган'), trigger: 'change' }
+      //   ],
+      //   address: [
+      //     { required: true, message: this.$t('Aдрес киритилмаган'), trigger: 'change' }
+      //   ],
+      //   tin: [
+      //     { required: true, message: this.$t('ЖШШИР киритилмаган'), trigger: 'change' }
+      //   ],
+      //   social_areas_id: [
+      //     { required: true, message: this.$t('Ижтимоий ҳолати киритилмаган'), trigger: 'change' }
+      //   ]
       },
-      validated: false,
-      birth_date_disabled: true
+      validated: true
     }
   },
   computed: {
+    ...mapGetters({
+      social_areas: 'citizen/GET_SOCIAL_AREAS'
+    }),
     isNumberFull() {
       return (this.form.passport.length >= 10)
     },
@@ -110,75 +137,29 @@ export default {
       return this.form.source
     }
   },
+  mounted() {
+    this.fetchSocialAreas()
+  },
   watch: {
     'form.passport'(newVal) {
       this.form.passport = newVal.toUpperCase()
     },
-    isNumberFull(newVal, oldVal) {
-      if (newVal && newVal !== oldVal) {
-        this.form.source = 1
-        this.getPassport()
-      }
-    },
-    'isBirthDateFull'(newVal, oldVal) {
-      if ((newVal && newVal !== oldVal) && this.source === 2) {
-        this.getPassportMVD()
-      }
-    }
+    // isNumberFull(newVal, oldVal) {
+    //   if (newVal && newVal !== oldVal) {
+    //     this.form.source = 1
+    //     this.getPassport()
+    //   }
+    // },
+    // 'isBirthDateFull'(newVal, oldVal) {
+    //   if ((newVal && newVal !== oldVal) && this.source === 2) {
+    //     this.getPassportMVD()
+    //   }
+    // }
   },
   methods: {
-    // getPassport() {
-    //   this.loading = 'passport'
-    //   this.getPassportAction({ passport: this.form.passport, birth_date: '' })
-    //     .then(res => {
-    //       if (res.result.citizen === undefined) {
-    //         this.$message({
-    //           message: this.$t('Маълмот топилмади'),
-    //           type: 'warning',
-    //           duration: 5 * 1000,
-    //           offset: 80
-    //         })
-    //       } else {
-    //         this.setForm({ form: this.form, citizen: res.result.citizen })
-    //       }
-    //       this.loading = ''
-    //     })
-    //     .catch(res => {
-    //       this.birth_date_disabled = false
-    //       this.loading = ''
-    //       this.form.source = 2
-    //       this.$refs.passport.focus()
-    //     })
-    // },
-    // getPassportMVD() {
-    //   this.loading = 'birth_date'
-    //   this.getPassportAction({ passport: this.form.passport, birth_date: this.form.birth_date })
-    //     .then(res => {
-    //       if (res.result.citizen.pAnswereMessage === 'Берилган критериялар бўйича фуқаро топилмади' || res.result.pAnswereMessage === 'Излашда базада ҳато' || res.result.citizen.pAnswereMessage === 'Излаш критерияларини текширида ҳато') {
-    //         this.$message({
-    //           message: this.$t('Маълмот топилмади'),
-    //           type: 'warning',
-    //           duration: 5 * 1000,
-    //           offset: 80
-    //         })
-    //       } else {
-    //         this.setMvdForm({ form: this.form, citizen: res.result.citizen })
-    //       }
-    //       this.loading = ''
-    //     })
-    //     .catch(res => {
-    //       console.log(res)
-    //       this.$message({
-    //         message: this.$t('Маълмот топилмади'),
-    //         type: 'warning',
-    //         duration: 5 * 1000,
-    //         offset: 80
-    //       })
-    //     })
-    //     .finally(() => {
-    //       this.loading = ''
-    //     })
-    // },
+    ...mapActions({
+      fetchSocialAreas: 'citizen/social_areas'
+    }),
     validateForm() {
       this.$refs['personal-form'].validate((valid) => {
         this.validated = valid

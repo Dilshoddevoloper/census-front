@@ -11,8 +11,10 @@ export const state = {
     city_id: '',
     type: '',
     address: '',
+    social_areas_id: '',
     region: {},
-    city: {}
+    city: {},
+    social_area: {}
   },
   citizens: {
     data: [],
@@ -20,4 +22,5 @@ export const state = {
   },
   regions: [],
   cities: [],
+  social_areas: [],
 }

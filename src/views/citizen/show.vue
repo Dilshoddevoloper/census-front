@@ -60,6 +60,10 @@ export default {
         {
           name: this.$t('Ҳудуд'),
           value: this.citizen.city.name_cyrl
+        },
+        {
+          name: this.$t('Ижтимоий ҳолати'),
+          value: this.citizen.social_areas.name_cyrl
         }
       ]
     }

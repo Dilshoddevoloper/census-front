@@ -1,4 +1,5 @@
 import { show, edit, update, index, store, passport, cities, regions, destroyCitizen } from '@/api/citizen'
+import {social_areas} from "../../api/citizen";
 export const actions = {
   loadCitizen({ commit }, res) {
     commit('SET_CITIZEN', res.result.citizen)
@@ -102,6 +103,16 @@ export const actions = {
     return new Promise((resolve, reject) => {
       cities(data).then(res => {
         commit('SET_CITIES', res.result.cities)
+        resolve(res)
+      }).catch(error => {
+        reject(error)
+      })
+    })
+  },
+  social_areas({ commit }, data) {
+    return new Promise((resolve, reject) => {
+      social_areas(data).then(res => {
+        commit('SET_SOCIAL_AREAS', res.result.social_areas)
         resolve(res)
       }).catch(error => {
         reject(error)
