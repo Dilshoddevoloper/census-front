@@ -14,23 +14,18 @@
           loader="bars"
         /> -->
         <thead>
-        <tr>
-          <td> {{ $t('Жaми') }} </td>
-          <th v-for="social in social_areas" >{{ social.name_cyrl }}</th>
+          <tr>
+            <th> {{ $t('Вилоятлар') }}</th>
+            <th v-for="social in social_areas">{{ social.name_cyrl }}</th>
           </tr>
         </thead>
         <tbody>
           <template>
-            <tr v-for="social in regions">
-              <td> {{ social.name_cyrl }} </td>
+            <tr v-for="social in parties_report">
+              <td> {{ social.social1 }} </td>
+              <td> {{ social.social2 }} </td>
             </tr>
-<!--            <tr v-for="party in parties_report.report">-->
-<!--              <td>{{ party.name }}</td>-->
-<!--              <td>{{ formatPrice(party.plan)  }}</td>-->
-<!--              <td>{{ formatPrice(party.yesterday) }}</td>-->
-<!--              <td>{{ formatPrice(party.count) }}</td>-->
-<!--              <td>{{ formatPrice(getDifference(party.count, party.yesterday)) }}</td>-->
-<!--              <td>{{ getPercent( party.plan, party.count) }}</td>-->
+
           </template>
         </tbody>
       </table>
@@ -50,16 +45,9 @@ export default {
   },
   data() {
     return {
-      // parties_report: {
-      //   report: report
-      // },
-      parties: [
-        { id: 1, name: this.$t('Ўзбекистон Либерал демократик партияси') },
-        { id: 2, name: this.$t('Ўзбекистон Халқ демократик партияси') },
-        { id: 3, name: this.$t('Ўзбекистон Aдолат социал-демократик партияси') },
-        { id: 4, name: this.$t('Ўзбекистон Миллий тикланиш партияси') },
-        { id: 5, name: this.$t('Ўзбекистон Экологик партияси') }
-      ],
+      parties_report: {
+        report: report
+      },
       columns: [
         {
           label: ' ',
