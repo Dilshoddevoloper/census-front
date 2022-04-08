@@ -1,22 +1,20 @@
 <template>
   <div class="container">
     <el-button icon="el-icon-arrow-left" type="primary" @click="back">{{ $t('Орқага') }}</el-button>
-    <h4 class="text-center">{{ $t('Aҳолининг ижтимоий соҳаларга тақсимланиши бўйича') }} <br>{{ $t('ҲИСОБОТ') }} </h4>
+    <h4 class="text-center">
+      {{ $t('Aҳолининг ижтимоий соҳаларга тақсимланиши бўйича') }} <br>{{ $t('ҲИСОБОТ') }} </h4>
     <p class="text-center"><b><img alt="logo" height="14px" src="@/assets/images/small-calendar.svg"> ( {{ today }}
       {{ $t('ҳолатида') }} )</b></p>
-
     <div class="bg-white table-holder  mt-4" @wheel.prevent="wheelHorizontal($event)">
-      <div v-if="hasScroll" :class="{'show' : showInfo}" class="info" @touchmove.prevent="scrollHorizontal($event)">
-        Scroll for more &rarr;
-      </div>
-      <div ref="table" class="table-responsive" @scroll.prevent="scrollHorizontal($event)">
+      <div class="info" v-if="hasScroll" @touchmove.prevent="scrollHorizontal($event)" :class="{'show' : showInfo}">Scroll for more &rarr;</div>
+      <div class="table-responsive" ref="table" @scroll.prevent="scrollHorizontal($event)">
         <div class=" box-shadow p-4">
           <table v-loading="isLoading" class="table table-hover table-bordered">
             <thead>
               <tr>
                 <th> {{ $t('Т/р') }}</th>
-                <th> {{ $t('Вилоятлар') }}</th>
-                <th> {{ $t('Жами') }}</th>
+                <th> {{ $t('Ҳудудлар') }}</th>
+                <th> {{ $t('Жами аҳоли сони') }}</th>
                 <th v-for="social in social_areas">{{ social.name_cyrl }}</th>
               </tr>
             </thead>
@@ -25,31 +23,29 @@
                 <tr>
                   <td></td>
                   <td>{{ $t('Жами аҳоли сони') }}</td>
-                  <td>{{ parties_report.report_count[0].citizens_count }}</td>
-                  <td>{{ parties_report.report_count[0].count_social1 }}</td>
-                  <td>{{ parties_report.report_count[0].count_social2 }}</td>
-                  <td>{{ parties_report.report_count[0].count_social3 }}</td>
-                  <td>{{ parties_report.report_count[0].count_social4 }}</td>
-                  <td>{{ parties_report.report_count[0].count_social5 }}</td>
-                  <td>{{ parties_report.report_count[0].count_social6 }}</td>
-                  <td>{{ parties_report.report_count[0].count_social7 }}</td>
-                  <td>{{ parties_report.report_count[0].count_social8 }}</td>
-                  <td>{{ parties_report.report_count[0].count_social9 }}</td>
-                  <td>{{ parties_report.report_count[0].count_social10 }}</td>
-                  <td>{{ parties_report.report_count[0].count_social11 }}</td>
-                  <td>{{ parties_report.report_count[0].count_social12 }}</td>
-                  <td>{{ parties_report.report_count[0].count_social13 }}</td>
-                  <td>{{ parties_report.report_count[0].count_social14 }}</td>
-                  <td>{{ parties_report.report_count[0].count_social15 }}</td>
-                  <td>{{ parties_report.report_count[0].count_social16 }}</td>
-                  <td>{{ parties_report.report_count[0].count_social17 }}</td>
-                  <td>{{ parties_report.report_count[0].count_social18 }}</td>
+                  <td>{{ report_city.report_count[0].citizens_count }}</td>
+                  <td>{{ report_city.report_count[0].count_social1 }}</td>
+                  <td>{{ report_city.report_count[0].count_social2 }}</td>
+                  <td>{{ report_city.report_count[0].count_social3 }}</td>
+                  <td>{{ report_city.report_count[0].count_social4 }}</td>
+                  <td>{{ report_city.report_count[0].count_social5 }}</td>
+                  <td>{{ report_city.report_count[0].count_social6 }}</td>
+                  <td>{{ report_city.report_count[0].count_social7 }}</td>
+                  <td>{{ report_city.report_count[0].count_social8 }}</td>
+                  <td>{{ report_city.report_count[0].count_social9 }}</td>
+                  <td>{{ report_city.report_count[0].count_social10 }}</td>
+                  <td>{{ report_city.report_count[0].count_social11 }}</td>
+                  <td>{{ report_city.report_count[0].count_social12 }}</td>
+                  <td>{{ report_city.report_count[0].count_social13 }}</td>
+                  <td>{{ report_city.report_count[0].count_social14 }}</td>
+                  <td>{{ report_city.report_count[0].count_social15 }}</td>
+                  <td>{{ report_city.report_count[0].count_social16 }}</td>
+                  <td>{{ report_city.report_count[0].count_social17 }}</td>
+                  <td>{{ report_city.report_count[0].count_social18 }}</td>
                 </tr>
-                <tr v-for="(social, index) in parties_report.report" :key="index">
+                <tr v-for="(social, index) in report_city.report" :key="index">
                   <td>{{ index + 1 }}</td>
-                  <td>
-                    <router-link :to="{ name:'ReportCityShow', params:{id: social.region_id} }">{{ social.region_name }} </router-link>
-                  </td>
+                  <td>{{ social.region_name }}</td>
                   <td> {{ social.region_count }}</td>
                   <td> {{ social.social1 }}</td>
                   <td> {{ social.social2 }}</td>
@@ -80,18 +76,15 @@
 </template>
 <script>
 import {mapActions, mapGetters} from 'vuex'
-
 export default {
-  name: 'Report',
-  components: {},
+  name: 'ReportCity',
+  components: {
+  },
   data() {
     return {
-      // parties_report: {
-      //   report_count: report_count
-      // },
-      // report_count:{
-      //   report_count: report_count
-      // },
+      report_city: {
+        report_city: report_city()
+      },
       isLoading: true,
       showInfo: true,
       hasScroll: true
@@ -100,7 +93,7 @@ export default {
   created() {
   },
   mounted() {
-    this.setReport().then(response => {
+    this.setReportCity(this.$route.params.id).then(response => {
       if (response.success) {
         this.isLoading = false
       }
@@ -125,8 +118,7 @@ export default {
   },
   computed: {
     ...mapGetters({
-      parties_report: 'report/GET_REPORT',
-      report_count: 'report/GET_REPORT',
+      report_city: 'report/GET_REPORT_CITY',
       user: 'auth/USER',
       social_areas: 'citizen/GET_SOCIAL_AREAS',
       regions: 'citizen/GET_REGIONS',
@@ -141,7 +133,7 @@ export default {
   },
   methods: {
     ...mapActions({
-      setReport: 'report/reportAll',
+      setReportCity: 'report/reportCity',
       fetchSocialAreas: 'citizen/social_areas',
       fetchRegions: 'citizen/regions',
     }),
@@ -164,6 +156,7 @@ export default {
 }
 </script>
 <style scoped>
+
 table tr:first-child td {
   font-weight: bold;
   font-size: 16px;
@@ -236,5 +229,4 @@ tr th:first-child, tr td:first-child {
   left: 0;
   background: white;
 }
-
 </style>

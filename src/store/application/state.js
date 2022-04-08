@@ -1,5 +1,5 @@
 export const state = {
-  citizen: {
+  application: {
     id: '',
     passport: '',
     tin: '',
@@ -16,7 +16,7 @@ export const state = {
     city: {},
     social_area: {}
   },
-  citizens: {
+  applications: {
     data: [],
     pagination: {}
   },

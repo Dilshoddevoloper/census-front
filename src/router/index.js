@@ -3,6 +3,7 @@ import store from '../store'
 import Router from 'vue-router'
 import auth from './middleweres/auth'
 import citizensRouter from './modules/citizen'
+import applicationsRouter from './modules/application'
 import middlewarePipeline from './middlewarePipeline'
 import partiesRouter from './modules/parties'
 Vue.use(Router)
@@ -38,21 +39,27 @@ export const constantRoutes = [
     children: [
       {
         name: 'Login',
-        path: '/',
+        path: '/login',
         component: () => import('@/views/Login'),
         meta: { middleware: [auth] }
       },
       {
         name: 'ChooseType',
-        path: '/choose-type',
+        path: '/',
         component: () => import('@/views/choose-type'),
-        meta: { middleware: [auth] }
       },
       {
         name: 'Report',
         path: '/report',
         component: () => import('@/views/report/report'),
         meta: { middleware: [auth] }
+      },
+      {
+        name: 'ReportCityShow',
+        path: '/report/:id(\\d+)',
+        component: () => import('@/views/report/show'),
+        meta: { title: 'Роли', noCache: true, activeMenu: 'report' },
+        hidden: true
       },
       {
         name: 'Auth',

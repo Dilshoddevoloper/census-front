@@ -1,5 +1,5 @@
 export const mutations = {
-  SET_CITIZEN: (state, citizen) => {
+  SET_APPLICATION: (state, citizen) => {
     state.citizen.id = citizen.id
     state.citizen.phone = citizen.phone
     state.citizen.passport = citizen.passport
@@ -19,7 +19,7 @@ export const mutations = {
     state.citizen.type = citizen.type
     state.citizen.social_areas_id = citizen.social_areas_id
   },
-  SET_CITIZENS: (state, citizens) => {
+  SET_APPLICATIONS: (state, citizens) => {
     state.citizens.data = citizens.data
     state.citizens.pagination = {
       total: citizens.total,

@@ -6,6 +6,7 @@ import auth from './auth'
 import citizen from './citizen'
 import report from './report'
 import parties from './parties'
+import application from './application'
 
 Vue.use(Vuex)
 
@@ -15,6 +16,7 @@ const store = new Vuex.Store({
     auth,
     citizen,
     report,
+    application,
     parties
   },
   getters

@@ -1,13 +1,13 @@
-import { show, edit, update, index, store, passport, cities, regions, phone, confirm, destroyCitizen } from '@/api/citizen'
-import {social_areas} from "../../api/citizen";
+import { show, edit, update, index, store, passport, cities, regions, phone, confirm, destroyCitizen } from '@/api/application'
+import {social_areas} from "../../api/application";
 export const actions = {
   loadCitizen({ commit }, res) {
-    commit('SET_CITIZEN', res.result.citizen)
+    commit('SET_APPLICATION', res.result.application)
   },
   index({ commit }, query) {
     return new Promise((resolve, reject) => {
       index(query).then(res => {
-        commit('SET_CITIZENS', res.result.citizens)
+        commit('SET_APPLICATIONS', res.result.applications)
         resolve(res)
       }).catch(error => {
         reject(error)
@@ -26,7 +26,7 @@ export const actions = {
   show({ commit }, citizen_id) {
     return new Promise((resolve, reject) => {
       show(citizen_id).then(res => {
-        commit('SET_CITIZEN', res.result.citizen)
+        commit('SET_APPLICATION', res.result.citizen)
         resolve(res)
       }).catch(error => {
         reject(error)

@@ -1,3 +1,6 @@
 export const state = {
-  report: []
+  report: [],
+  report_count: [],
+  report_city: [],
+  citys: []
 }

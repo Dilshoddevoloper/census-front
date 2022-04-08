@@ -2,7 +2,7 @@ import request from '@/utils/request'
 
 export function index(query) {
   return request({
-    url: 'v1/citizens',
+    url: 'v1/applications',
     method: 'get',
     params: query
   })
@@ -10,32 +10,32 @@ export function index(query) {
 
 export function show(id) {
   return request({
-    url: 'v1/citizens/show/' + id,
+    url: 'v1/applications/show/' + id,
     method: 'get'
   })
 }
 export function phone(phone) {
   return request({
-    url: 'v1/citizens/getCode/' + phone,
+    url: 'v1/applications/getCode/' + phone,
     method: 'get'
   })
 }
 // export function checkCode(data) {
 //   return request({
-//     url: 'v1/citizens/checkCode/' + data.phone + '/' + data.checkCode,
+//     url: 'v1/applications/checkCode/' + data.phone + '/' + data.checkCode,
 //     method: 'get'
 //   })
 // }
 export function confirm(data) {
   return request({
-    url: 'v1/citizens/confirm-sms',
+    url: 'v1/applications/confirm-sms',
     method: 'post',
     data
   })
 }
 export function store(data) {
   return request({
-    url: 'v1/citizens/store',
+    url: 'v1/applications/store',
     method: 'post',
     data
   })
@@ -43,14 +43,14 @@ export function store(data) {
 
 export function edit(id) {
   return request({
-    url: 'v1/citizens/show/' + id,
+    url: 'v1/applications/show/' + id,
     method: 'get'
   })
 }
 
 export function update(data) {
   return request({
-    url: 'v1/citizens/update/' + data.id,
+    url: 'v1/applications/update/' + data.id,
     method: 'put',
     data: data
   })
@@ -58,7 +58,7 @@ export function update(data) {
 
 export function destroyCitizen(id) {
   return request({
-    url: 'v1/citizens/destroy/' + id,
+    url: 'v1/applications/destroy/' + id,
     method: 'delete'
   })
 }
@@ -74,7 +74,7 @@ export function bulk(type, list) {
 
 export function passport(data) {
   return request({
-    url: 'citizens/passport',
+    url: 'applications/passport',
     method: 'post',
     data: data
   })

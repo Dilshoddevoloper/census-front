@@ -1,58 +1,89 @@
 <template>
   <div clas="h-100">
     <el-row>
-    <!-- <el-row>
+     <el-row>
       <el-col :span="24" class="text-center">
         <h5>
           Ўзбекистон Республикаси Бандлик ва меҳнат муносабатлари вазирлиги<br> Ташқи меҳнат миграцияси масалалари агентлигининг <br>«Ягона миллий миграция тизими» га хуш келибсиз
         </h5>
       </el-col>
-    </el-row> -->
+    </el-row>
       <el-row class="d-flex justify-content-around mt-100">
-
-        <!-- <div class="text-center">
-          Ўзбекистон Республикаси Президентининг маслаҳатчиси топшириғига биноан,
-          <br> сайтда ҳудудий маълумотномаларни шакллантириш бўйича профилактик ишлар<br> 
-          амалга оширилмоқда. <br> <br>
-Профилактик ишларни режалаштирилган тугаш вақти: <br>2020 йил 28 апрел соат 15:00.</div> -->
         <el-row>
           <el-col :xs="24" :sm="12" :lg="12" :xl="12" class="mr-10" style="padding-right:40px">
             <el-col :span="24" class="p-5" >
-              <router-link :to="{ name: 'CitizensIndex', query: { type: 1 } }">
-                <el-card class="box-card classic-style">
-                  <el-row class="mb-2 text-center">
-                    <div class="m-1 router-link" style="font-size:18x"> <b>{{ $t('Вилоят кенгаши') }}</b>  {{ $t('депутатлари') }}  <br> {{ $t('рўйхати') }}</div> <br><br>
-                  </el-row>
-                  <el-row>
-                    <el-button type="primary" class="w-100">{{ $t('Рўйхатга ўтиш') }}</el-button>
-                  </el-row>
-                </el-card>
-              </router-link>
-            </el-col>
-          </el-col>
-          <el-col :xs="24" :sm="12" :lg="12" :xl="12" class="ml-10" style="padding-left:50px">
-            <el-col :span="24" class="p-5">
-              <router-link :to="{name: 'CitizensIndex', query: { type: 2 }}">
-                <el-card class="box-card box-shadow classic-style">
-                  <el-row class="mb-2 text-center">
-                    <div class="m-1 router-link" style="font-size:18x"> <b>{{ $t('Туман кенгаши') }}</b>  {{ $t('депутатлари') }}  <br> {{ $t('рўйхати') }}</div> <br> <br>
-                  </el-row>
-                  <el-row>
-                    <el-button type="primary" class="w-100">{{ $t('Рўйхатга ўтиш') }}</el-button>
-                  </el-row>
-                </el-card>
-              </router-link>
+              <el-card class="box-card classic-style">
+                <el-row class="mb-2 text-center">
+                  <div class="m-1 router-link" style="font-size:18x"> <b>{{ $t('Шахсий мобил рақамингизни киритинг') }}</b></div> <br><br>
+                </el-row>
+                <el-input class="el-input" v-mask="'#########'" placeholder="Шахсий мобил рақамингизни киритинг" v-model="data.phone">
+                  <template slot="prepend">+998</template>
+                </el-input>
+                <el-row>
+                  <el-button @click="showPassword()" type="primary" class="w-100">{{ $t('Юбориш') }}</el-button>
+                </el-row>
+                <el-input v-loading="!loaded" style="margin-top: 20px;  width: 130px;" v-mask="'#####'" placeholder="Кодни киритинг" v-model="data.code"></el-input>
+                <el-button  v-loading="!loaded" @click="confirmation" type="primary" class="w-100">{{ $t('Тасдиқлаш') }}</el-button>
+              </el-card>
             </el-col>
           </el-col>
         </el-row>
-      </el-row> 
+      </el-row>
     </el-row>
   </div>
 </template>
 
 <script>
+import {mapActions} from "vuex";
+
 export default {
-  name: 'ChooseType'
+  name: 'ChooseType',
+  data() {
+    return {
+      data: {
+        phone: '',
+        checkCode: '',
+        is_confirmed: false
+      },
+      input: '',
+      // checkCode: '',
+      // phone: '',
+      loaded: false
+    }
+  },
+  methods: {
+    ...mapActions({
+      fetchPhone: 'citizen/phone',
+      fetchCheckCode: 'citizen/checkCode',
+      confirmAction: 'citizen/confirm',
+    }),
+    showPassword(){
+      this.loaded = true
+      this.fetchPhone('+998' + this.data.phone)
+    },
+    confirmation() {
+      if (!this.data.code) {
+        this.$message.error('Kodni kiriting!')
+        return false
+      }
+      this.loading = 'code'
+      this.confirmAction({ phone: '+998' + this.data.phone, code: this.data.code }).then((res) => {
+        if (res.success) {
+          this.data.is_confirmed = true
+          this.confirmDialog = false
+          this.$router.push({ name: 'CitizensCreate'})
+          // this.$message.success('Muvaffaqiyatli tasdiqlandi!')
+          this.$emit('phoneSuccess', true)
+        } else {
+          this.$message.error('Kod mos emas!')
+        }
+      }).catch((res) => {
+        this.$message.error('Kod mos emas!')
+      }).finally(() => {
+        this.loading = ''
+      })
+    },
+  }
 }
 </script>
 <style scoped>
@@ -76,6 +107,9 @@ export default {
   }
   .mt-200 {
     margin-top: 240px;
+  }
+  .el-input{
+    margin-bottom: 20px;
   }
 </style>
 
