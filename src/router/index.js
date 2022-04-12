@@ -3,9 +3,9 @@ import store from '../store'
 import Router from 'vue-router'
 import auth from './middleweres/auth'
 import citizensRouter from './modules/citizen'
-import applicationsRouter from './modules/application'
 import middlewarePipeline from './middlewarePipeline'
 import partiesRouter from './modules/parties'
+import applicationsRouter from './modules/application'
 Vue.use(Router)
 /**
  * Note: sub-menu only appear when route children.length >= 1
@@ -44,9 +44,21 @@ export const constantRoutes = [
         meta: { middleware: [auth] }
       },
       {
+        name: 'ApplicationCheckYouth',
+        path: '/application-check-youth',
+        component: () => import('@/views/application-check')
+      },
+      {
         name: 'ChooseType',
         path: '/',
         component: () => import('@/views/choose-type'),
+      },
+      {
+        name: 'ApplicationsCreate',
+        path: 'applications/create/',
+        component: () => import('@/views/application/create/index'),
+        meta: { title: 'Создать', icon: 'edit', activeMenu: 'applications' },
+        hidden: true
       },
       {
         name: 'Report',
@@ -80,9 +92,16 @@ export const constantRoutes = [
     meta: { middleware: [auth] },
     children: [
       ...citizensRouter,
-      ...partiesRouter
+      ...partiesRouter,
+    ]
+  }, {
+    path: '/',
+    component: () => import('@/layouts/main'),
+    children: [
+      ...applicationsRouter
     ]
   },
+
   {
     path: '/token',
     component: () => import('@/layouts/main')

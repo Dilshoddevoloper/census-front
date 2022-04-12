@@ -9,9 +9,12 @@ export const state = {
     birth_date: '',
     region_id: '',
     city_id: '',
+    number: '',
+    code: '',
     type: '',
     address: '',
     social_areas_id: '',
+    phone: '',
     region: {},
     city: {},
     social_area: {}
@@ -22,7 +25,8 @@ export const state = {
   },
   regions: [],
   cities: [],
-  phone: [],
+  phone: '',
   data: [],
   social_areas: [],
+  denyReasons: []
 }

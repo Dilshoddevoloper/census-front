@@ -1,8 +1,9 @@
-import { show, edit, update, index, store, passport, cities, regions, phone, confirm, destroyCitizen } from '@/api/application'
+import { show, edit, update, index, store, passport, cities, regions, phone, confirm, destroyapplication,denyReasons,updateStatusAction,checkStatusApplication, confirmapplication } from '@/api/application'
 import {social_areas} from "../../api/application";
+// import application from "../../router/modules/application";
 export const actions = {
   loadCitizen({ commit }, res) {
-    commit('SET_APPLICATION', res.result.application)
+    commit('SET_APPLICATION', res.result.applications)
   },
   index({ commit }, query) {
     return new Promise((resolve, reject) => {
@@ -23,10 +24,30 @@ export const actions = {
       })
     })
   },
-  show({ commit }, citizen_id) {
+  show({ commit }, data) {
     return new Promise((resolve, reject) => {
-      show(citizen_id).then(res => {
-        commit('SET_APPLICATION', res.result.citizen)
+      console.log('data' + data)
+      show(data).then(res => {
+        commit('SET_APPLICATION', res.result.application)
+        resolve(res)
+      }).catch(error => {
+        reject(error)
+      })
+    })
+  },
+  phone({ commit }, data) {
+    return new Promise((resolve, reject) => {
+      phone(data).then(res => {
+        commit('SET_PHONE', res.phone)
+        resolve(res)
+      }).catch(error => {
+        reject(error)
+      })
+    })
+  },
+  checkStatusApplication({ commit }, query) {
+    return new Promise((resolve, reject) => {
+      checkStatusApplication(query).then(res => {
         resolve(res)
       }).catch(error => {
         reject(error)
@@ -65,7 +86,17 @@ export const actions = {
   },
   delete({ commit }, id) {
     return new Promise((resolve, reject) => {
-      destroyCitizen(id)
+      destroyapplication(id)
+        .then(res => {
+          resolve(res)
+        }).catch((res) => {
+          reject(res)
+        })
+    })
+  },
+  confirmation({ commit }, id) {
+    return new Promise((resolve, reject) => {
+      confirmapplication(id)
         .then(res => {
           resolve(res)
         }).catch((res) => {
@@ -109,16 +140,7 @@ export const actions = {
       })
     })
   },
-  phone({ commit }, data) {
-    return new Promise((resolve, reject) => {
-      phone(data).then(res => {
-        commit('SET_PHONE', res.phone)
-        resolve(res)
-      }).catch(error => {
-        reject(error)
-      })
-    })
-  },
+
   // checkCode({ commit }, data) {
   //   return new Promise((resolve, reject) => {
   //     checkCode(data).then(res => {
@@ -133,6 +155,7 @@ export const actions = {
     return new Promise((resolve, reject) => {
       confirm(data)
         .then(res => {
+          commit('SET_PHONE', data.phone)
           resolve(res)
         }).catch((res) => { reject(res) })
     })
@@ -147,49 +170,57 @@ export const actions = {
       })
     })
   },
-  setForm({ commit }, { form, citizen }) {
-    if (citizen.id) {
-      form.id = citizen.id
-      form.birth_date = citizen.birth_date.split('-').reverse().join('.')
-      form.first_name = citizen.first_name
-      form.passport = citizen.passport
-      form.last_name = citizen.last_name
-      form.address = citizen.address
-      form.fathers_name = citizen.fathers_name
-      form.tin = citizen.tin
+  denyReasons({ commit }, data) {
+    return new Promise((resolve, reject) => {
+      denyReasons(data).then(res => {
+        commit('SET_DENY_REASONS', res.result.denyReasons)
+        resolve(res)
+      }).catch(error => {
+        reject(error)
+      })
+    })
+  },
+  updateStatusAction({ commit }, data) {
+    return new Promise((resolve, reject) => {
+      updateStatusAction(data)
+          .then(res => {
+            resolve(res)
+          }).catch((res) => { reject(res) })
+    })
+  },
+  setForm({ commit }, { form, application }) {
+    if (application.id) {
+      form.id = application.id
+      form.birth_date = application.birth_date.split('-').reverse().join('.')
+      form.first_name = application.first_name
+      form.passport = application.passport
+      form.last_name = application.last_name
+      form.address = application.address
+      form.fathers_name = application.fathers_name
+      form.tin = application.tin
     } else {
-      form.birth_date = citizen.date_birth
-      form.first_name = citizen.first_name
-      form.last_name = citizen.last_name
-      form.fathers_name = citizen.fathers_name
+      form.birth_date = application.date_birth
+      form.first_name = application.first_name
+      form.last_name = application.last_name
+      form.fathers_name = application.fathers_name
     }
   },
-  setMvdForm({ commit }, { form, citizen }) {
-    if (citizen.id) {
-      form.id = citizen.id
-      form.birth_date = citizen.birth_date.split('-').reverse().join('.')
-      form.first_name = citizen.first_name
-      form.passport = citizen.passport
-      form.last_name = citizen.last_name
-      form.fathers_name = citizen.fathers_name
+  setMvdForm({ commit }, { form, application }) {
+    if (application.id) {
+      form.id = application.id
+      form.birth_date = application.birth_date.split('-').reverse().join('.')
+      form.first_name = application.first_name
+      form.passport = application.passport
+      form.last_name = application.last_name
+      form.fathers_name = application.fathers_name
     } else {
-      form.first_name = citizen.pSurname
-      form.last_name = citizen.pName
-      form.fathers_name = citizen.pPatronym
-      form.gender = 1 * citizen.pSex
-      form.pin = citizen.pPinpp
-      form.new_passport = citizen.pPsp
+      form.first_name = application.pSurname
+      form.last_name = application.pName
+      form.fathers_name = application.pPatronym
+      form.gender = 1 * application.pSex
+      form.pin = application.pPinpp
+      form.new_passport = application.pPsp
       form.source = 2
-    }
-    try {
-      const entrance_year = citizen.entrance_year
-      if (entrance_year) {
-        form.party_details.entrance_year = citizen.entrance_year
-        form.party_details.ticket_number = citizen.ticket_number
-      }
-    } catch (exp) {
-      form.party_details.entrance_year = ''
-      form.party_details.ticket_number = ''
     }
   }
 }

@@ -2,24 +2,16 @@
   <div class="container">
     <h4 class="font-weight-bold">{{ title }}</h4>
     <div class="bg-white box-shadow p-4" v-loading="!loaded">
-      <el-button v-if="user.role_id === 1 || user.role_id === 2" type="success"
-                 class="float-right mb-4 font-weight-bold" icon="el-icon-download" :loading="isLoading"
-                 @click="exportToXlsx()">{{ $t('Юклаб олиш') }}
-      </el-button>
-      <router-link :to="{name: 'Report'}">
-        <el-button v-if="user.role_id === 1 || user.role_id === 2" type="success"
-                   class="float-right mb-4 font-weight-bold" icon="el-icon-download">{{ $t('Ҳисобот') }}
-        </el-button>
-      </router-link>
-      <template v-if="user.role_id === 3">
-        <router-link :to="{name: 'CitizensCreate', query: { type: $route.query.type } }">
-          <el-button type="success" class="float-right mb-4 font-weight-bold" icon="el-icon-plus">{{ $t('Aъзо қўшиш') }}
-          </el-button>
-        </router-link>
-      </template>
-      <el-table v-if="loaded" class="mb-1 mx-auto table-custom" :data="citizens" border>
-        <el-table-column label="№" width="50" type="index" :index="indexMethod" fixed/>
-        <el-table-column label="" width="220" prop="region">
+      <div>
+        <el-radio-group v-model="filter.status" @change="sendFilter">
+          <el-radio-button :value="0" label="0">Янги</el-radio-button>
+          <el-radio-button :value="1" label="1">Тасдиқланган</el-radio-button>
+          <el-radio-button :value="2" label="2 ">Рад етилган</el-radio-button>
+        </el-radio-group>
+      </div>
+      <el-table v-if="loaded" class="mb-1 mx-auto table-custom" :data="applications" border>
+        <el-table-column label="№" width="45" type="index" :index="indexMethod" fixed/>
+        <el-table-column label="" width="138" prop="region">
           <template slot="header">
             <p>{{ $t('Ҳудуд') }}</p>
             <select v-model="filter.region_id" class="w-170" style="height: 28px" @change="sendFilterRegion">
@@ -47,7 +39,7 @@
             <p>{{ (scope.row.city && scope.row.city.name_cyrl) ? scope.row.city.name_cyrl : '---' }}</p>
           </template>
         </el-table-column>
-        <el-table-column label="" width="300" prop="region">
+        <el-table-column label="" width="390" prop="region">
           <template slot="header">
             <p>{{ $t('Ижтимоий ҳолати') }}</p>
             <select v-model="filter.social_areas_id" class="w-170" style="height: 28px" @change="sendFilter">
@@ -72,7 +64,7 @@
             <input v-model="filter.last_name" class="form-control form-control-sm w-100">
           </template>
           <template slot-scope="scope">
-            <router-link :to="{ name:'CitizensShow', params:{id: scope.row.id}, query: {type:  $route.query.type } }">
+            <router-link :to="{ name:'ApplicationsShow', params:{id: scope.row.id}, query: {type:  $route.query.type } }">
               {{ scope.row.last_name }}
             </router-link>
           </template>
@@ -95,7 +87,6 @@
             {{ scope.row.fathers_name }}
           </template>
         </el-table-column>
-
         <el-table-column prop="passport" width="120">
           <template slot="header">
             <p>{{ $t('Паспорт') }}</p>
@@ -106,13 +97,11 @@
           <template slot="header">
             <el-button class="mt-3" type="primary" size="mini" @click="sendFilter()">{{ $t('Қидириш') }}</el-button>
           </template>
-          <template v-if="user.role_id == 3" slot-scope="scope">
-            <router-link :to="{ name:'CitizensEdit', params:{id: scope.row.id} }">
-              <el-button size="mini" type="info">{{ $t('Таҳрирлаш') }}</el-button>
-            </router-link>
-            <el-button size="mini" class="m-1" type="danger" @click="deleteCitizen(scope.row.id)">{{
-                $t('Ўчириш')
-              }}
+          <template v-if="user.role_id == 3 && scope.row.status == 0" slot-scope="scope">
+<!--            <router-link :to="{ name:'CitizensEdit', params:{id: scope.row.id} }">-->
+            <el-button size="mini" type="success" @click="ConfirmationApplication(scope.row.id)">{{ $t('Тасдиқлаш') }}</el-button>
+<!--             </router-link>-->
+            <el-button size="mini" class="m-1" type="danger" @click="showDialog(scope.row)">{{ $t('Рад этиш') }}
             </el-button>
           </template>
         </el-table-column>
@@ -126,6 +115,24 @@
           @size-change="handleSizeChange"
           @current-change="handleCurrentChange"
       />
+      <el-dialog :visible.sync="dialogVisible" width="30%">
+        <template slot="title"><h4>Рад этиш</h4></template>
+        <div>
+          <label for="deny_reason_id">Рад этиш сабаби</label>
+          <el-select id="deny_reason_id" v-model="form.deny_reason_id" class="w-100">
+            <el-option v-for="item in denyReasons" :key="item.id" :label="item.name" :value="item.id" />
+          </el-select>
+        </div>
+        <br><br>
+        <div>
+          <label for="deny_reason">Изоҳ</label>
+          <el-input id="deny_reason" v-model="form.deny_reason" />
+        </div>
+        <span slot="footer" class="dialog-footer">
+        <el-button type="text" @click="dialogVisible = false">Бекор қилиш</el-button>
+        <el-button type="danger" @click="updateStatus(form.id, 2)">Рад этиш</el-button>
+      </span>
+      </el-dialog>
     </div>
   </div>
 </template>
@@ -137,9 +144,14 @@ import {toXlsx} from '@/utils/exports'
 import Swal from 'sweetalert2'
 
 export default {
-  name: 'CitizenIndex',
+  name: 'ApplicationIndex',
   data() {
     return {
+      form: {
+        id: null,
+        deny_reason_id: null,
+        deny_reason: ''
+      },
       filter: {
         last_name: '',
         first_name: '',
@@ -147,13 +159,20 @@ export default {
         region_id: null,
         city_id: null,
         social_areas_id: null,
+        status: 0,
         passport: '',
         tin: null,
         limit: 0,
         page: 0,
         total: null
       },
+      statuses: [
+        { id: 0, name: 'Янги' },
+        { id: 1, name: 'Тасдиқланган' },
+        { id: 2, name: 'Рад етилган' },
+      ],
       loaded: false,
+      dialogVisible: false,
       columns: [
         {
           label: this.$t('ФИО'),
@@ -173,12 +192,13 @@ export default {
   },
   computed: {
     ...mapGetters({
-      citizens: 'citizen/GET_CITIZENS',
-      citizens_pagination: 'citizen/GET_CITIZENS_PAGINATION',
+      applications: 'application/GET_APPLICATIONS',
+      applications_pagination: 'application/GET_APPLICATIONS_PAGINATION',
       user: 'auth/USER',
-      regions: 'citizen/GET_REGIONS',
-      cities: 'citizen/GET_CITIES',
-      social_areas: 'citizen/GET_SOCIAL_AREAS'
+      regions: 'application/GET_REGIONS',
+      cities: 'application/GET_CITIES',
+      social_areas: 'application/GET_SOCIAL_AREAS',
+      denyReasons: 'application/GET_DENY_REASONS'
     }),
     title() {
       return this.$t('Фуқаролар рўйхати')
@@ -199,10 +219,10 @@ export default {
       this.filter.emblefathers_name = this.$route.query.emblefathers_name
       this.sendFilter()
     } else {
-      this.fetchCitizens().then((res) => {
-        this.filter.limit = this.citizens_pagination.limit
-        this.filter.page = this.citizens_pagination.page
-        this.filter.total = this.citizens_pagination.total
+      this.fetchApplications().then((res) => {
+        this.filter.limit = this.applications_pagination.limit
+        this.filter.page = this.applications_pagination.page
+        this.filter.total = this.applications_pagination.total
       })
     }
     if (this.user.role_id == 1) {
@@ -217,37 +237,87 @@ export default {
     this.fetchSocialAreas().then((res) => {
       this.sendFilter()
     })
+    this.fetchDenyReasons().then((res) => {
+      this.sendFilter()
+    })
   },
   methods: {
     ...mapActions({
-      fetchCitizens: 'citizen/index',
-      indexFull: 'citizen/indexFull',
-      fetchCities: 'citizen/cities',
-      fetchRegions: 'citizen/regions',
-      fetchSocialAreas: 'citizen/social_areas',
-      deleteCitizenAction: 'citizen/delete'
+      fetchApplications: 'application/index',
+      indexFull: 'application/indexFull',
+      fetchCities: 'application/cities',
+      fetchRegions: 'application/regions',
+      fetchSocialAreas: 'application/social_areas',
+      fetchDenyReasons: 'application/denyReasons',
+      deleteApplicationAction: 'application/delete',
+      confirmationApplicationAction: 'application/confirmation',
+      updateStatusAction: 'application/updateStatusAction',
     }),
+    updateStatus(application_id, status) {
+      const msg = (status === 1) ? 'Ушбу аризани тасдиқлайсизми?' : 'Ушбу аризани рад этмоқчимисиз?'
+      if (status === 2 && (!this.form.deny_reason || this.form.deny_reason === '' || !this.form.deny_reason_id)) {
+        this.$message.error('Майдонларни тўлдиринг')
+        return false
+      }
+      if (status === 1) {
+        this.$confirm(msg, 'Эътибор беринг', { confirmButtonText: 'Тасдиқлаш', cancelButtonText: 'Бекор қилиш', type: 'warning' }).then(() => {
+          this.update(application_id, status)
+        })
+      } else {
+        this.update(application_id, status)
+      }
+    },
+    update(application_id, status) {
+      this.updateStatusAction({ id: application_id, status, deny_reason: this.form.deny_reason, deny_reason_id: this.form.deny_reason_id }).then((res) => {
+        this.dialogVisible = false
+        if (res.success) {
+          Swal.fire({
+            title: 'Маълумот сақланди!',
+            type: 'success',
+            timer: 1500,
+            showConfirmButton: false,
+            confirmButtonText: 'Давом этиш'
+          }).then(() => {
+            this.getCount()
+            this.sendFilter()
+          })
+        } else {
+          Swal.fire({
+            title: typeof res.error === 'string' ? res.error : 'ERROR',
+            type: 'warning',
+            timer: 2500,
+            showConfirmButton: false,
+            confirmButtonText: 'Давом этиш'
+          })
+        }
+      })
+    },
     getTime(date) {
       return parseTime(date)
     },
+    showDialog(item) {
+      this.item = item
+      this.form.id = item.id
+      this.dialogVisible = true
+    },
     handleCurrentChange(val) {
-      this.filter.limit = this.citizens_pagination.limit
+      this.filter.limit = this.applications_pagination.limit
       this.filter.page = val
       this.sendFilter()
     },
     handleSizeChange(val) {
       this.filter.limit = val
-      this.filter.page = this.citizens_pagination.page
+      this.filter.page = this.applications_pagination.page
       this.sendFilter()
     },
     sendFilter() {
       this.filter.page = null
       this.loaded = false
-      this.fetchCitizens(this.filter).then((res) => {
+      this.fetchApplications(this.filter).then((res) => {
         this.loaded = true
-        this.filter.limit = this.citizens_pagination.limit
-        this.filter.page = this.citizens_pagination.page
-        this.filter.total = this.citizens_pagination.total
+        this.filter.limit = this.applications_pagination.limit
+        this.filter.page = this.applications_pagination.page
+        this.filter.total = this.applications_pagination.total
       })
     },
     sendFilterRegion() {
@@ -259,11 +329,18 @@ export default {
       }
     },
     indexMethod(index) {
-      return (this.citizens_pagination.page - 1) * 50 + index + 1
+      return (this.applications_pagination.page - 1) * 50 + index + 1
     },
-    deleteCitizen(id) {
+    ConfirmationApplication(id){
+      if (confirm(this.$t('Ҳақиқатан ҳам ушбу маълумотни тасдиқламоқчимисиз?'))) {
+        this.confirmationApplicationAction(id).then((res) => {
+          this.sendFilter()
+        })
+      }
+    },
+    deleteApplication(id) {
       if (confirm(this.$t('Ҳақиқатан ҳам ушбу маълумотни ўчирмоқчимисиз?'))) {
-        this.deleteCitizenAction(id).then((res) => {
+        this.deleteApplicationAction(id).then((res) => {
           Swal.fire({
             title: this.$t('Муваффақиятли ўчирилди!'),
             type: 'success',

@@ -21,11 +21,6 @@ export const mutations = {
   },
   SET_CITIZENS: (state, citizens) => {
     state.citizens.data = citizens.data
-    state.citizens.pagination = {
-      total: citizens.total,
-      page: citizens.current_page,
-      limit: citizens.per_page
-    }
   },
   SET_REGIONS: (state, regions) => {
     state.regions = regions

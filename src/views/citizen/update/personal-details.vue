@@ -62,6 +62,11 @@
             </el-form-item>
           </el-col>
           <el-col :span="6">
+            <el-form-item :label="$t('Телефон рақам')">
+              <el-input v-model="form.phone" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="6">
             <el-form-item :label="$t('Ижтимоий ҳолати')" prop="social_areas_id">
               <el-select v-model="form.social_areas_id" class="w-100" filterable>
                 <el-option v-for="social in social_areas" :key="social.id" :label="social.name_cyrl" :value="social.id" />

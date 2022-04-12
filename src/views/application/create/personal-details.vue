@@ -24,20 +24,20 @@
               />
             </el-form-item>
           </el-col>
+          <el-col :span="6">
+            <el-form-item :label="$t('ЖШШИР')"prop="tin">
+              <el-input maxlength="14"  v-mask="'##############'" v-model="form.tin" />
+            </el-form-item>
+          </el-col>
           <el-col :span="8">
             <el-form-item type="date" :label="$t('Туғилган санаси')" prop="birth_date">
               <el-input
-                v-loading="loading === 'birth_date'"
-                ref="birth_date"
-                v-model="form.birth_date"
-                v-mask="'##.##.####'"
-                placeholder="01.01.2019"
+                  v-loading="loading === 'birth_date'"
+                  ref="birth_date"
+                  v-model="form.birth_date"
+                  v-mask="'##.##.####'"
+                  placeholder="01.01.2019"
               />
-            </el-form-item>
-          </el-col>
-          <el-col :span="6">
-            <el-form-item :label="$t('ЖШШИР')"prop="tin">
-              <el-input maxlength="14" v-model="form.tin" />
             </el-form-item>
           </el-col>
         </el-row>
@@ -71,6 +71,20 @@
               </el-select>
             </el-form-item>
           </el-col>
+          <el-col :span="6">
+            <el-form-item :label="$t('Ҳудуд')" prop="region_id">
+              <el-select @select="onRegion" v-model="form.region_id" class="w-100" filterable>
+                <el-option v-for="region in regions" :key="region.id" :label="region.name_cyrl" :value="region.id"  />
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="6">
+            <el-form-item :label="$t('Туман(Шахар)')" prop="city_id">
+              <el-select v-model="form.city_id" class="w-100" filterable>
+                <el-option v-for="city in cities" :key="city.id" :label="city.name_cyrl" :value="city.id" />
+              </el-select>
+            </el-form-item>
+          </el-col>
         </el-row>
       </el-col>
     </el-row>
@@ -79,12 +93,15 @@
 
 <script>
 import { mapActions, mapGetters } from 'vuex'
+import application from "../../../router/modules/application";
 
 export default {
   name: 'PersonalDetial',
   props: {
     form: {
       type: Object,
+      y_id: '',
+      region_id: '',
       default() {
         return { }
       }
@@ -95,37 +112,46 @@ export default {
       loading: '',
       active: 0,
       rules: {
-      //   passport: [
-      //     { required: true, message: this.$t('Паспорт киритилмаган'), trigger: 'change' }
-      //   ],
-      //   birth_date: [
-      //     { required: true, message: this.$t('Туғилган сана киритилмаган'), trigger: 'change' }
-      //   ],
-      //   first_name: [
-      //     { required: true, message: this.$t('Исм киритилмаган'), trigger: 'change' }
-      //   ],
-      //   last_name: [
-      //     { required: true, message: this.$t('Фамилия киритилмаган'), trigger: 'change' }
-      //   ],
-      //   fathers_name: [
-      //     { required: true, message: this.$t('Отасининг исми киритилмаган'), trigger: 'change' }
-      //   ],
-      //   address: [
-      //     { required: true, message: this.$t('Aдрес киритилмаган'), trigger: 'change' }
-      //   ],
-      //   tin: [
-      //     { required: true, message: this.$t('ЖШШИР киритилмаган'), trigger: 'change' }
-      //   ],
-      //   social_areas_id: [
-      //     { required: true, message: this.$t('Ижтимоий ҳолати киритилмаган'), trigger: 'change' }
-      //   ]
+        passport: [
+          { required: true, message: this.$t('Паспорт киритилмаган'), trigger: 'change' }
+        ],
+        birth_date: [
+          { required: true, message: this.$t('Туғилган сана киритилмаган'), trigger: 'change' }
+        ],
+        first_name: [
+          { required: true, message: this.$t('Исм киритилмаган'), trigger: 'change' }
+        ],
+        last_name: [
+          { required: true, message: this.$t('Фамилия киритилмаган'), trigger: 'change' }
+        ],
+        fathers_name: [
+          { required: true, message: this.$t('Отасининг исми киритилмаган'), trigger: 'change' }
+        ],
+        address: [
+          { required: true, message: this.$t('Aдрес киритилмаган'), trigger: 'change' }
+        ],
+        tin: [
+          { required: true, message: this.$t('ЖШШИР киритилмаган'), trigger: 'change' }
+        ],
+        social_areas_id: [
+          { required: true, message: this.$t('Ижтимоий ҳолати киритилмаган'), trigger: 'change' }
+        ],
+        region_id: [
+          { required: true, message: this.$t('Ҳудуд киритилмаган'), trigger: 'change' }
+        ],
+        city_id: [
+          { required: true, message: this.$t('Туман (шаҳар) киритилмаган'), trigger: 'change' }
+        ]
       },
       validated: true
     }
   },
   computed: {
     ...mapGetters({
-      social_areas: 'citizen/GET_SOCIAL_AREAS'
+      social_areas: 'application/GET_SOCIAL_AREAS',
+      regions: 'application/GET_REGIONS',
+      cities: 'application/GET_CITIES',
+      applications_pagination: 'application/GET_APPLICATIONS_PAGINATION'
     }),
     isNumberFull() {
       return (this.form.passport.length >= 10)
@@ -139,26 +165,27 @@ export default {
   },
   mounted() {
     this.fetchSocialAreas()
+    this.fetchRegions().then((res) => {
+    })
   },
   watch: {
     'form.passport'(newVal) {
       this.form.passport = newVal.toUpperCase()
     },
-    // isNumberFull(newVal, oldVal) {
-    //   if (newVal && newVal !== oldVal) {
-    //     this.form.source = 1
-    //     this.getPassport()
-    //   }
-    // },
-    // 'isBirthDateFull'(newVal, oldVal) {
-    //   if ((newVal && newVal !== oldVal) && this.source === 2) {
-    //     this.getPassportMVD()
-    //   }
-    // }
+    'form.region_id'(newVal, oldVal) {
+      if (newVal && newVal !== oldVal) {
+        this.fetchCities({ region_id: newVal }).then((res) => {
+          this.cities = res.result.cities
+        })
+      }
+    }
   },
   methods: {
     ...mapActions({
-      fetchSocialAreas: 'citizen/social_areas'
+      fetchSocialAreas: 'application/social_areas',
+      fetchCities: 'application/cities',
+      fetchRegions: 'application/regions',
+      fetchApplications: 'application/index'
     }),
     validateForm() {
       this.$refs['personal-form'].validate((valid) => {

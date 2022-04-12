@@ -64,6 +64,10 @@ export default {
         {
           name: this.$t('Ижтимоий ҳолати'),
           value: this.citizen.social_areas.name_cyrl
+        },
+        {
+          name: this.$t('Телефон рақами\n'),
+          value: this.citizen.phone
         }
       ]
     }

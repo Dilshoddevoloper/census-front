@@ -9,6 +9,7 @@ export const state = {
     birth_date: '',
     region_id: '',
     city_id: '',
+    phone: '',
     type: '',
     address: '',
     social_areas_id: '',

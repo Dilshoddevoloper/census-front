@@ -9,14 +9,18 @@
           <div v-if="is_auth" class="d-flex" style="cursor: pointer" @click="logoutHandle()">
             {{ $t('Тизимдан чиқиш') }} <img alt="logo" src="@/assets/images/logout.svg" height="14px" class="ml-2 mt-1">
           </div>
-          <div v-else class="d-flex" style="cursor: pointer" @click="loginViaAuthService()">
-            {{ $t('Aдминистраторлар учун кириш') }}
-            <img
-                alt="logo"
-                src="@/assets/images/login.svg"
-                height="14px"
-                class="ml-2 mt-1"
-            >
+          <div v-else class="d-flex" style="cursor: pointer">
+            <router-link :to="{ name:'Login' }">
+              <div>
+                {{ $t('Aдминистраторлар учун кириш') }}
+                <img
+                  alt="logo"
+                  src="@/assets/images/login.svg"
+                  height="14px"
+                  class="ml-2 mt-1"
+                >
+              </div>
+            </router-link>
           </div>
         </div>
       </div>
@@ -31,6 +35,15 @@
     >
       <el-menu-item index="1" class="d-none d-sm-none d-md-block"><router-link :to="'/'"> <img alt="logo" width="300px" height="60px" src="@/assets/images/logouz.png"> </router-link></el-menu-item>
       <el-menu-item v-if="is_auth" index="3" style="float: right;">{{ user_full_name }}</el-menu-item>
+      <router-link :to="{name: 'ApplicationsIndex'}">
+        <el-menu-item  v-if="is_auth" index="3" style=" line-height: 88px; float: right;">Сўровлар</el-menu-item>
+      </router-link>
+      <router-link :to="{name: 'ApplicationCheckYouth'}">
+        <el-menu-item v-if="!is_auth" index="3" style="float: right; line-height: 89px;">Aриза ҳолатини текшириш</el-menu-item>
+      </router-link>
+      <router-link :to="{name: 'Report'}">
+        <el-menu-item v-if="user.role_id === 1 || user.role_id === 2" index="3" style="float: right; line-height: 89px;">Ҳисобот</el-menu-item>
+      </router-link>
     </el-menu>
   </div>
 </template>

@@ -6,11 +6,6 @@
                  class="float-right mb-4 font-weight-bold" icon="el-icon-download" :loading="isLoading"
                  @click="exportToXlsx()">{{ $t('Юклаб олиш') }}
       </el-button>
-      <router-link :to="{name: 'Report'}">
-        <el-button v-if="user.role_id === 1 || user.role_id === 2" type="success"
-                   class="float-right mb-4 font-weight-bold" icon="el-icon-download">{{ $t('Ҳисобот') }}
-        </el-button>
-      </router-link>
       <template v-if="user.role_id === 3">
         <router-link :to="{name: 'CitizensCreate', query: { type: $route.query.type } }">
           <el-button type="success" class="float-right mb-4 font-weight-bold" icon="el-icon-plus">{{ $t('Aъзо қўшиш') }}
@@ -19,7 +14,7 @@
       </template>
       <el-table v-if="loaded" class="mb-1 mx-auto table-custom" :data="citizens" border>
         <el-table-column label="№" width="50" type="index" :index="indexMethod" fixed/>
-        <el-table-column label="" width="220" prop="region">
+        <el-table-column label="" width="172" prop="region">
           <template slot="header">
             <p>{{ $t('Ҳудуд') }}</p>
             <select v-model="filter.region_id" class="w-170" style="height: 28px" @change="sendFilterRegion">
@@ -47,7 +42,7 @@
             <p>{{ (scope.row.city && scope.row.city.name_cyrl) ? scope.row.city.name_cyrl : '---' }}</p>
           </template>
         </el-table-column>
-        <el-table-column label="" width="300" prop="region">
+        <el-table-column label="" width="390" prop="region">
           <template slot="header">
             <p>{{ $t('Ижтимоий ҳолати') }}</p>
             <select v-model="filter.social_areas_id" class="w-170" style="height: 28px" @change="sendFilter">
@@ -66,13 +61,13 @@
               }}</p>
           </template>
         </el-table-column>
-        <el-table-column width="160">
+        <el-table-column width="120">
           <template slot="header">
             <p>{{ $t('Фамиляси') }}</p>
             <input v-model="filter.last_name" class="form-control form-control-sm w-100">
           </template>
           <template slot-scope="scope">
-            <router-link :to="{ name:'CitizensShow', params:{id: scope.row.id}, query: {type:  $route.query.type } }">
+            <router-link :to="{ name:'CitizensShow', params:{id: scope.row.id}, query: {type: $route.query.type } }">
               {{ scope.row.last_name }}
             </router-link>
           </template>
@@ -110,21 +105,19 @@
             <router-link :to="{ name:'CitizensEdit', params:{id: scope.row.id} }">
               <el-button size="mini" type="info">{{ $t('Таҳрирлаш') }}</el-button>
             </router-link>
-            <el-button size="mini" class="m-1" type="danger" @click="deleteCitizen(scope.row.id)">{{
-                $t('Ўчириш')
-              }}
+            <el-button size="mini" class="m-1" type="danger" @click="deleteCitizen(scope.row.id)">{{ $t('Ўчириш') }}
             </el-button>
           </template>
         </el-table-column>
       </el-table>
       <el-pagination
-          background
-          :total="filter.total"
-          :page-size="1 * filter.limit"
-          layout="prev, pager, next"
-          class="mt-3"
-          @size-change="handleSizeChange"
-          @current-change="handleCurrentChange"
+        background
+        :total="filter.total"
+        :page-size="1 * filter.limit"
+        layout="prev, pager, next"
+        class="mt-3"
+        @size-change="handleSizeChange"
+        @current-change="handleCurrentChange"
       />
     </div>
   </div>
@@ -166,6 +159,30 @@ export default {
         {
           label: this.$t('ЖШШИР'),
           field: 'tin'
+        },
+        {
+          label: this.$t('Телефон рақами'),
+          field: 'phone'
+        },
+        {
+          label: this.$t('Тугулган куни'),
+          field: 'birth_date'
+        },
+        {
+          label: this.$t('Вилоят'),
+          field: 'region'
+        },
+        {
+          label: this.$t('Ҳудуд'),
+          field: 'city'
+        },
+        {
+          label: this.$t('Aддрес'),
+          field: 'address'
+        },
+        {
+          label: this.$t('Ижтимоий ҳолати'),
+          field: 'social_areas'
         }
       ],
       isLoading: false
@@ -209,11 +226,12 @@ export default {
       this.fetchRegions().then((res) => {
         this.sendFilter()
       })
-    } else {
-      this.fetchCities({region_id: this.user.region_id}).then((res) => {
-        this.sendFilter()
-      })
     }
+    // else {
+    //   this.fetchCities({region_id: this.user.region_id}).then((res) => {
+    //     this.sendFilter()
+    //   })
+    // }
     this.fetchSocialAreas().then((res) => {
       this.sendFilter()
     })
@@ -259,7 +277,8 @@ export default {
       }
     },
     indexMethod(index) {
-      return (this.citizens_pagination.page - 1) * 50 + index + 1
+      // return (this.citizens_pagination.page - 1) * 50 + index + 1
+      return index + 1
     },
     deleteCitizen(id) {
       if (confirm(this.$t('Ҳақиқатан ҳам ушбу маълумотни ўчирмоқчимисиз?'))) {
@@ -298,7 +317,13 @@ export default {
           arr.push({
             tin: row.tin,
             full_name: [row.last_name, row.first_name, row.fathers_name].join(' '),
-            passport: row.passport
+            passport: row.passport,
+            phone: row.phone,
+            birth_date: row.birth_date,
+            social_areas: row.social_areas.name_cyrl,
+            region: row.region.name_cyrl,
+            city: row.city.name_cyrl,
+            address: row.address
           })
         })
         return arr

@@ -74,7 +74,7 @@ export const actions = {
     })
   },
   passport({ commit }, params) {
-    const data = { passport: params.passport.replace(' ', ''), birth_date: params.birth_date }
+    const data = { passport: params.passport.replace(' ', ''), tin: params.tin }
     return new Promise((resolve, reject) => {
       passport(data)
         .then(res => {
@@ -109,34 +109,6 @@ export const actions = {
       })
     })
   },
-  phone({ commit }, data) {
-    return new Promise((resolve, reject) => {
-      phone(data).then(res => {
-        commit('SET_PHONE', res.phone)
-        resolve(res)
-      }).catch(error => {
-        reject(error)
-      })
-    })
-  },
-  // checkCode({ commit }, data) {
-  //   return new Promise((resolve, reject) => {
-  //     checkCode(data).then(res => {
-  //       commit('SET_CHECK_CODE', res.data)
-  //       resolve(res)
-  //     }).catch(error => {
-  //       reject(error)
-  //     })
-  //   })
-  // },
-  confirm({ commit }, data) {
-    return new Promise((resolve, reject) => {
-      confirm(data)
-        .then(res => {
-          resolve(res)
-        }).catch((res) => { reject(res) })
-    })
-  },
   social_areas({ commit }, data) {
     return new Promise((resolve, reject) => {
       social_areas(data).then(res => {
@@ -155,6 +127,7 @@ export const actions = {
       form.passport = citizen.passport
       form.last_name = citizen.last_name
       form.address = citizen.address
+      form.phone = citizen.phone
       form.fathers_name = citizen.fathers_name
       form.tin = citizen.tin
     } else {

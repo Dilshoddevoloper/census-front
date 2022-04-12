@@ -2,7 +2,7 @@ import request from '@/utils/request'
 
 export function index(query) {
   return request({
-    url: 'v1/applications',
+    url: 'v1/application',
     method: 'get',
     params: query
   })
@@ -10,32 +10,38 @@ export function index(query) {
 
 export function show(id) {
   return request({
-    url: 'v1/applications/show/' + id,
+    url: 'v1/application/show/' + id,
+    method: 'get'
+  })
+}
+export function showCode(id) {
+  return request({
+    url: 'v1/application/show/' + id,
     method: 'get'
   })
 }
 export function phone(phone) {
   return request({
-    url: 'v1/applications/getCode/' + phone,
+    url: 'v1/application/getCode/' + phone,
     method: 'get'
   })
 }
 // export function checkCode(data) {
 //   return request({
-//     url: 'v1/applications/checkCode/' + data.phone + '/' + data.checkCode,
+//     url: 'v1/application/checkCode/' + data.phone + '/' + data.checkCode,
 //     method: 'get'
 //   })
 // }
 export function confirm(data) {
   return request({
-    url: 'v1/applications/confirm-sms',
+    url: 'v1/application/confirm-sms',
     method: 'post',
     data
   })
 }
 export function store(data) {
   return request({
-    url: 'v1/applications/store',
+    url: 'v1/application/store',
     method: 'post',
     data
   })
@@ -43,22 +49,35 @@ export function store(data) {
 
 export function edit(id) {
   return request({
-    url: 'v1/applications/show/' + id,
+    url: 'v1/application/show/' + id,
     method: 'get'
+  })
+}
+
+export function confirmapplication(id) {
+  return request({
+    url: 'v1/application/confirm/' + id,
+    method: 'put'
   })
 }
 
 export function update(data) {
   return request({
-    url: 'v1/applications/update/' + data.id,
+    url: 'v1/application/update/' + data.id,
     method: 'put',
     data: data
   })
 }
-
+export function checkStatusApplication(query) {
+  return request({
+    url: 'v1/application/check-status-application',
+    method: 'get',
+    params: query
+  })
+}
 export function destroyCitizen(id) {
   return request({
-    url: 'v1/applications/destroy/' + id,
+    url: 'v1/application/destroy/' + id,
     method: 'delete'
   })
 }
@@ -74,7 +93,7 @@ export function bulk(type, list) {
 
 export function passport(data) {
   return request({
-    url: 'applications/passport',
+    url: 'application/passport',
     method: 'post',
     data: data
   })
@@ -105,5 +124,19 @@ export function social_areas(query) {
     url: 'v1/resources/social_areas',
     method: 'get',
     params: query
+  })
+}
+export function denyReasons(query) {
+  return request({
+    url: 'v1/resources/denyReasons',
+    method: 'get',
+    params: query
+  })
+}
+export function updateStatusAction(data) {
+  return request({
+    url: 'v1/application/update/' + data.id,
+    method: 'put',
+    data
   })
 }

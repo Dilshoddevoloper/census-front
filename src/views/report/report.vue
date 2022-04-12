@@ -1,6 +1,8 @@
 <template>
   <div class="container">
-    <el-button icon="el-icon-arrow-left" type="primary" @click="back">{{ $t('Орқага') }}</el-button>
+    <router-link :to="{ name:'CitizensIndex', query: { type: $route.query.type } }">
+      <el-button icon="el-icon-arrow-left" type="primary" @click="back">{{ $t('Рўйҳатга қайтиш') }}</el-button>
+    </router-link>
     <h4 class="text-center">{{ $t('Aҳолининг ижтимоий соҳаларга тақсимланиши бўйича') }} <br>{{ $t('ҲИСОБОТ') }} </h4>
     <p class="text-center"><b><img alt="logo" height="14px" src="@/assets/images/small-calendar.svg"> ( {{ today }}
       {{ $t('ҳолатида') }} )</b></p>

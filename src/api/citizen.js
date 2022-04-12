@@ -74,7 +74,7 @@ export function bulk(type, list) {
 
 export function passport(data) {
   return request({
-    url: 'citizens/passport',
+    url: 'v1/citizens/passport',
     method: 'post',
     data: data
   })

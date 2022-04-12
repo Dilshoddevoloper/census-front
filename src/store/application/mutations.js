@@ -1,30 +1,33 @@
 export const mutations = {
-  SET_APPLICATION: (state, citizen) => {
-    state.citizen.id = citizen.id
-    state.citizen.phone = citizen.phone
-    state.citizen.passport = citizen.passport
-    state.citizen.first_name = citizen.first_name
-    state.citizen.last_name = citizen.last_name
-    state.citizen.fathers_name = citizen.fathers_name
-    state.citizen.birth_date = citizen.birth_date
-    state.citizen.address = citizen.address
-    state.citizen.pin = citizen.pin
-    state.citizen.tin = citizen.tin
-    state.citizen.new_passport = citizen.new_passport
-    state.citizen.region_id = citizen.region_id
-    state.citizen.city = citizen.city
-    state.citizen.region = citizen.region
-    state.citizen.social_areas = citizen.social_areas
-    state.citizen.city_id = citizen.city_id
-    state.citizen.type = citizen.type
-    state.citizen.social_areas_id = citizen.social_areas_id
+  SET_APPLICATION: (state, application) => {
+    state.application.id = application.id
+    state.application.passport = application.passport
+    state.application.first_name = application.first_name
+    state.application.last_name = application.last_name
+    state.application.fathers_name = application.fathers_name
+    state.application.birth_date = application.birth_date
+    state.application.address = application.address
+    state.application.pin = application.pin
+    state.application.tin = application.tin
+    state.application.new_passport = application.new_passport
+    state.application.region_id = application.region_id
+    state.application.city = application.city
+    state.application.number = application.number
+    state.application.code = application.code
+    state.application.region = application.region
+    state.application.phone = application.phone
+    state.application.social_areas = application.social_areas
+    state.application.status = application.status
+    state.application.city_id = application.city_id
+    state.application.type = application.type
+    state.application.social_areas_id = application.social_areas_id
   },
-  SET_APPLICATIONS: (state, citizens) => {
-    state.citizens.data = citizens.data
-    state.citizens.pagination = {
-      total: citizens.total,
-      page: citizens.current_page,
-      limit: citizens.per_page
+  SET_APPLICATIONS: (state, applications) => {
+    state.applications.data = applications.data
+    state.applications.pagination = {
+      total: applications.total,
+      page: applications.current_page,
+      limit: applications.per_page
     }
   },
   SET_REGIONS: (state, regions) => {
@@ -41,5 +44,8 @@ export const mutations = {
   },
   SET_SOCIAL_AREAS: (state, social_areas) => {
     state.social_areas = social_areas
+  },
+  SET_DENY_REASONS: (state, denyReasons) => {
+    state.denyReasons = denyReasons
   }
 }

@@ -16,14 +16,14 @@
                 <el-row class="mb-2 text-center">
                   <div class="m-1 router-link" style="font-size:18x"> <b>{{ $t('Шахсий мобил рақамингизни киритинг') }}</b></div> <br><br>
                 </el-row>
-                <el-input class="el-input" v-mask="'#########'" placeholder="Шахсий мобил рақамингизни киритинг" v-model="data.phone">
+                <el-input class="el-input" v-mask="'#########'" placeholder="Шахсий мобил рақамингизни киритинг" v-model="data.phone" >
                   <template slot="prepend">+998</template>
                 </el-input>
                 <el-row>
                   <el-button @click="showPassword()" type="primary" class="w-100">{{ $t('Юбориш') }}</el-button>
                 </el-row>
-                <el-input v-loading="!loaded" style="margin-top: 20px;  width: 130px;" v-mask="'#####'" placeholder="Кодни киритинг" v-model="data.code"></el-input>
-                <el-button  v-loading="!loaded" @click="confirmation" type="primary" class="w-100">{{ $t('Тасдиқлаш') }}</el-button>
+                <el-input v-if="loaded" style="margin-top: 20px;  width: 130px;" v-mask="'#####'" placeholder="Кодни киритинг" v-model="data.code"></el-input>
+                <el-button v-if="loaded" @click="confirmation" type="primary" class="w-100">{{ $t('Тасдиқлаш') }}</el-button>
               </el-card>
             </el-col>
           </el-col>
@@ -43,8 +43,9 @@ export default {
       data: {
         phone: '',
         checkCode: '',
-        is_confirmed: false
+        is_confirmed: false,
       },
+      dialogVisible: false,
       input: '',
       // checkCode: '',
       // phone: '',
@@ -53,12 +54,12 @@ export default {
   },
   methods: {
     ...mapActions({
-      fetchPhone: 'citizen/phone',
-      fetchCheckCode: 'citizen/checkCode',
-      confirmAction: 'citizen/confirm',
+      fetchPhone: 'application/phone',
+      confirmAction: 'application/confirm',
     }),
     showPassword(){
       this.loaded = true
+      this.dialogVisible = true
       this.fetchPhone('+998' + this.data.phone)
     },
     confirmation() {
@@ -71,7 +72,7 @@ export default {
         if (res.success) {
           this.data.is_confirmed = true
           this.confirmDialog = false
-          this.$router.push({ name: 'CitizensCreate'})
+          this.$router.push({ name: 'ApplicationsCreate'})
           // this.$message.success('Muvaffaqiyatli tasdiqlandi!')
           this.$emit('phoneSuccess', true)
         } else {

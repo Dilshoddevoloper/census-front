@@ -1,9 +1,17 @@
+import auth from "../middleweres/auth";
+
 const applicationsRouter = [
   {
     name: 'ApplicationsShow',
     path: 'applications/:id(\\d+)',
     component: () => import('@/views/application/show'),
-    meta: { title: 'Роли', icon: 'role', noCache: true }
+    meta: { middleware: [auth] },
+
+  },
+  {
+    name: 'ApplicationsShowCode',
+    path: 'applications/:id(\\d+)',
+    component: () => import('@/views/application/showCode')
   },
   {
     name: 'ApplicationsCreate',
@@ -23,8 +31,9 @@ const applicationsRouter = [
     name: 'ApplicationsIndex',
     path: 'applications',
     component: () => import('@/views/application/index'),
-    meta: { title: 'Изменить', noCache: true, activeMenu: 'applications' },
+    meta: { middleware: [auth] },
     hidden: true
+
   }
 ]
 

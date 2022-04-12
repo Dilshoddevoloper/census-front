@@ -32,6 +32,7 @@ export default {
         passport: '',
         first_name: '',
         last_name: '',
+        phone: '',
         fathers_name: '',
         birth_date: '',
         tin: '',

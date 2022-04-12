@@ -1,24 +1,12 @@
 <template>
   <div class="container">
-    <router-link :to="{ name:'CitizensIndex', query: { type: $route.query.type } }">
+    <router-link :to="{ name:'ApplicationsIndex', query: { type: $route.query.type } }">
       <el-button type="text" class="mb-1" icon="el-icon-arrow-left">{{ $t('Рўйҳатга қайтиш') }}</el-button>
     </router-link>
     <div class="bg-white box-shadow p-4">
-      <el-table
-        class="table-custom"
-        :data="formdata"
-        border
-      >
-        <el-table-column
-          :label="$t('Номи')"
-          prop="name"
-          width="300"
-          class="font-weight-bold"
-        />
-        <el-table-column
-          prop="value"
-          :label="$t('Қиймати')"
-        />
+      <el-table class="table-custom"  :data="formdata" border>
+        <el-table-column :label="$t('Номи')" prop="name" width="300" class="font-weight-bold"/>
+        <el-table-column prop="value" :label="$t('Қиймати')"/>
       </el-table>
     </div>
   </div>
@@ -28,51 +16,55 @@
 import { mapGetters, mapActions } from 'vuex'
 
 export default {
-  name: 'CitizenShow',
+  name: 'ApplicationShow',
   computed: {
-    ...mapGetters({ citizen: 'citizen/GET_CITIZEN' }),
+    ...mapGetters({ application: 'application/GET_APPLICATION' }),
     formdata() {
       return [
         {
           name: this.$t('ФИО'),
-          value: [this.citizen.first_name, this.citizen.last_name, this.citizen.fathers_name].join(' ')
+          value: [this.application.first_name, this.application.last_name, this.application.fathers_name].join(' ')
         },
         {
           name: this.$t('Паспорт'),
-          value: this.citizen.passport
+          value: this.application.passport
         },
         {
           name: this.$t('Тугулган куни'),
-          value: this.citizen.birth_date
+          value: this.application.birth_date
         },
         {
           name: this.$t('Aддрес'),
-          value: this.citizen.address
+          value: this.application.address
         },
         {
           name: this.$t('ЖШШИР'),
-          value: this.citizen.tin
+          value: this.application.tin
+        },
+        {
+          name: this.$t('телефон рақами'),
+          value: this.application.phone
         },
         {
           name: this.$t('Вилоят'),
-          value: this.citizen.region.name_cyrl
+          value: this.application.region.name_cyrl
         },
         {
           name: this.$t('Ҳудуд'),
-          value: this.citizen.city.name_cyrl
+          value: this.application.city.name_cyrl
         },
-        {
-          name: this.$t('Ижтимоий ҳолати'),
-          value: this.citizen.social_areas.name_cyrl
-        }
+        // {  // refresh berganda xatolik beryabdi
+        //   name: this.$t('Ижтимоий ҳолати'),
+        //   value: this.application.social_areas.name_cyrl
+        // }
       ]
     }
   },
   mounted() {
-    this.fetchCitizen(this.$route.params.id)
+    this.fetchApplication(this.$route.params.id)
   },
   methods: {
-    ...mapActions({ fetchCitizen: 'citizen/show' })
+    ...mapActions({ fetchApplication: 'application/show' })
   }
 }
 </script>
